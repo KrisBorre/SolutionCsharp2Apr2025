@@ -7,8 +7,8 @@ using Seq2SeqSharp.Metrics;
 using Seq2SeqSharp.Tools;
 using Seq2SeqSharp.Utils;
 
-// ChatGPT, aangepast
-namespace ConsoleDutchItalianSeq2Seq3Jun2025
+// ChatGPT, modified
+namespace ConsoleDutchItalianSeq2Seq05Jul2025
 {
     internal class Program
     {
@@ -16,6 +16,7 @@ namespace ConsoleDutchItalianSeq2Seq3Jun2025
         {
             string srcLang = "NL";
             string tgtLang = "IT";
+            string modelFilePath = "nl2it.model";
 
             var trainData = new List<(string src, string tgt)>
             {
@@ -31,7 +32,7 @@ namespace ConsoleDutchItalianSeq2Seq3Jun2025
                 ("Ik ben moe", "Sono stanco")
             };
 
-            string srcTrainFile = "train.nl.snt";
+            string srcTrainFile = "train.nl.snt"; // Do not change file extension.
             string tgtTrainFile = "train.it.snt";
 
             File.WriteAllLines(srcTrainFile, trainData.ConvertAll(p => p.src));
@@ -46,9 +47,9 @@ namespace ConsoleDutchItalianSeq2Seq3Jun2025
                 TgtLang = tgtLang,
                 EncoderLayerDepth = 2,
                 DecoderLayerDepth = 2,
-                HiddenSize = 512,
-                SrcEmbeddingDim = 512,
-                TgtEmbeddingDim = 512,
+                HiddenSize = 128,
+                SrcEmbeddingDim = 128,
+                TgtEmbeddingDim = 128,
                 MaxEpochNum = 200,
                 MaxTokenSizePerBatch = 10,
                 ValMaxTokenSizePerBatch = 10,
@@ -57,7 +58,7 @@ namespace ConsoleDutchItalianSeq2Seq3Jun2025
                 PaddingType = PaddingEnums.AllowPadding,
                 TooLongSequence = TooLongSequence.Ignore,
                 ProcessorType = ProcessorTypeEnums.CPU,
-                ModelFilePath = "nl2it_epoch200.model",
+                ModelFilePath = modelFilePath,
                 StartLearningRate = 0.001f,
                 WarmUpSteps = 10,
                 SharedEmbeddings = false,
@@ -103,7 +104,7 @@ namespace ConsoleDutchItalianSeq2Seq3Jun2025
 
             // Inference
             opts.Task = ModeEnums.Test;
-            opts.ModelFilePath = "nl2it_epoch200.model.trained";
+            opts.ModelFilePath = modelFilePath + ".trained";
             var inferModel = new Seq2Seq(opts);
 
             string testInputPath = "test_input.nl.snt";
@@ -119,7 +120,9 @@ namespace ConsoleDutchItalianSeq2Seq3Jun2025
                 inputTestFile: testInputPath,
                 outputFile: testOutputPath,
                 batchSize: 1,
-                decodingOptions: opts.CreateDecodingOptions(), null, null);
+                decodingOptions: opts.CreateDecodingOptions(),
+                srcSpmPath: null,
+                tgtSpmPath: null); // We are not using SentencePiece
 
             Console.WriteLine("\nTranslations:");
             foreach (var line in File.ReadLines(testOutputPath))
@@ -127,65 +130,82 @@ namespace ConsoleDutchItalianSeq2Seq3Jun2025
                 Console.WriteLine(line);
             }
 
+            string[] files1 = Directory.GetFiles(rootPath, "*.tmp.sorted.txt");
+
+            foreach (string file in files1)
+            {
+                File.Delete(file);
+            }
+
+            string[] files2 = Directory.GetFiles(rootPath, "nl2it.model.*");
+            foreach (string file in files2)
+            {
+                File.Delete(file);
+            }
+
+            File.Delete(srcTrainFile);
+            File.Delete(tgtTrainFile);
+            File.Delete(testInputPath);
+            File.Delete(testOutputPath);
+
             /*
-             Epoch 16, Update 100, Cost = 0,5192
-Epoch 33, Update 200, Cost = 0,0689
-Epoch 49, Update 300, Cost = 0,0224
-Epoch 66, Update 400, Cost = 0,0110
-Epoch 83, Update 500, Cost = 0,0071
-Epoch 99, Update 600, Cost = 0,0035
-Epoch 116, Update 700, Cost = 0,0021
-Epoch 133, Update 800, Cost = 0,0015
-Epoch 149, Update 900, Cost = 0,0009
-Epoch 166, Update 1000, Cost = 0,4381
-Epoch 183, Update 1100, Cost = 0,2092
-Epoch 199, Update 1200, Cost = 0,0591
+      Epoch 16, Update 100, Cost = 1,2563
+Epoch 33, Update 200, Cost = 0,3869
+Epoch 49, Update 300, Cost = 0,1975
+Epoch 66, Update 400, Cost = 0,1284
+Epoch 83, Update 500, Cost = 0,0978
+Epoch 99, Update 600, Cost = 0,0717
+Epoch 116, Update 700, Cost = 0,0620
+Epoch 133, Update 800, Cost = 0,0568
+Epoch 149, Update 900, Cost = 0,0492
+Epoch 166, Update 1000, Cost = 0,0479
+Epoch 183, Update 1100, Cost = 0,0473
+Epoch 199, Update 1200, Cost = 0,0434
 
 Translations:
 <s> Che ore sono ? </s>
-<s> Questa è la mia casa </s>
-<s> Ti amo </s>
+<s> Questa è la mia </s>
+<s> Ti un amo </s>
              */
 
             /*
-             Epoch 16, Update 100, Cost = 0,3597
-Epoch 33, Update 200, Cost = 0,0520
-Epoch 49, Update 300, Cost = 0,0199
-Epoch 66, Update 400, Cost = 0,0100
-Epoch 83, Update 500, Cost = 0,0059
-Epoch 99, Update 600, Cost = 0,0032
-Epoch 116, Update 700, Cost = 0,0019
-Epoch 133, Update 800, Cost = 0,0012
-Epoch 149, Update 900, Cost = 0,0008
-Epoch 166, Update 1000, Cost = 0,3857
-Epoch 183, Update 1100, Cost = 0,1950
-Epoch 199, Update 1200, Cost = 0,0481
+             Epoch 16, Update 100, Cost = 1,2130
+Epoch 33, Update 200, Cost = 0,3741
+Epoch 49, Update 300, Cost = 0,2252
+Epoch 66, Update 400, Cost = 0,1300
+Epoch 83, Update 500, Cost = 0,0968
+Epoch 99, Update 600, Cost = 0,0770
+Epoch 116, Update 700, Cost = 0,0612
+Epoch 133, Update 800, Cost = 0,0566
+Epoch 149, Update 900, Cost = 0,0523
+Epoch 166, Update 1000, Cost = 0,0470
+Epoch 183, Update 1100, Cost = 0,0474
+Epoch 199, Update 1200, Cost = 0,0462
 
 Translations:
 <s> Che ore sono ? </s>
-<s> Questa è la mia casa </s>
-<s> Ti amo amo </s>
-
+<s> Questa è la mia mia </s>
+<s> Ti </s>
              */
 
             /*
-             Epoch 16, Update 100, Cost = 0,4514
-Epoch 33, Update 200, Cost = 0,0498
-Epoch 49, Update 300, Cost = 0,0225
-Epoch 66, Update 400, Cost = 0,0103
-Epoch 83, Update 500, Cost = 0,0062
-Epoch 99, Update 600, Cost = 0,0036
-Epoch 116, Update 700, Cost = 0,0019
-Epoch 133, Update 800, Cost = 0,0013
-Epoch 149, Update 900, Cost = 0,0009
-Epoch 166, Update 1000, Cost = 1,1466
-Epoch 183, Update 1100, Cost = 0,6603
-Epoch 199, Update 1200, Cost = 0,1413
+             Epoch 16, Update 100, Cost = 0,9772
+Epoch 33, Update 200, Cost = 0,3534
+Epoch 49, Update 300, Cost = 0,1937
+Epoch 66, Update 400, Cost = 0,1181
+Epoch 83, Update 500, Cost = 0,0914
+Epoch 99, Update 600, Cost = 0,0706
+Epoch 116, Update 700, Cost = 0,0570
+Epoch 133, Update 800, Cost = 0,0533
+Epoch 149, Update 900, Cost = 0,0483
+Epoch 166, Update 1000, Cost = 0,0441
+Epoch 183, Update 1100, Cost = 0,0444
+Epoch 199, Update 1200, Cost = 0,0428
 
 Translations:
 <s> Che ore sono ? </s>
-<s> Questa è la mia casa </s>
-<s> Ti è </s>
+<s> Questa è la </s>
+<s> Questo è </s>
              */
 
             Console.ReadLine();

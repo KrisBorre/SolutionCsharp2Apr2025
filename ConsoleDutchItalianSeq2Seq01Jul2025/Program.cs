@@ -7,8 +7,8 @@ using Seq2SeqSharp.Metrics;
 using Seq2SeqSharp.Tools;
 using Seq2SeqSharp.Utils;
 
-// ChatGPT, aangepast
-namespace ConsoleDutchItalianSeq2Seq3Jun2025
+// ChatGPT, modified
+namespace ConsoleDutchItalianSeq2Seq01Jul2025
 {
     internal class Program
     {
@@ -31,7 +31,7 @@ namespace ConsoleDutchItalianSeq2Seq3Jun2025
                 ("Ik ben moe", "Sono stanco")
             };
 
-            string srcTrainFile = "train.nl.snt";
+            string srcTrainFile = "train.nl.snt"; // Do not change file extension.
             string tgtTrainFile = "train.it.snt";
 
             File.WriteAllLines(srcTrainFile, trainData.ConvertAll(p => p.src));
@@ -46,9 +46,9 @@ namespace ConsoleDutchItalianSeq2Seq3Jun2025
                 TgtLang = tgtLang,
                 EncoderLayerDepth = 2,
                 DecoderLayerDepth = 2,
-                HiddenSize = 512,
-                SrcEmbeddingDim = 512,
-                TgtEmbeddingDim = 512,
+                HiddenSize = 64,
+                SrcEmbeddingDim = 64,
+                TgtEmbeddingDim = 64,
                 MaxEpochNum = 200,
                 MaxTokenSizePerBatch = 10,
                 ValMaxTokenSizePerBatch = 10,
@@ -128,63 +128,62 @@ namespace ConsoleDutchItalianSeq2Seq3Jun2025
             }
 
             /*
-             Epoch 16, Update 100, Cost = 0,5192
-Epoch 33, Update 200, Cost = 0,0689
-Epoch 49, Update 300, Cost = 0,0224
-Epoch 66, Update 400, Cost = 0,0110
-Epoch 83, Update 500, Cost = 0,0071
-Epoch 99, Update 600, Cost = 0,0035
-Epoch 116, Update 700, Cost = 0,0021
-Epoch 133, Update 800, Cost = 0,0015
-Epoch 149, Update 900, Cost = 0,0009
-Epoch 166, Update 1000, Cost = 0,4381
-Epoch 183, Update 1100, Cost = 0,2092
-Epoch 199, Update 1200, Cost = 0,0591
+             Epoch 16, Update 100, Cost = 5,7275
+    Epoch 33, Update 200, Cost = 3,1839
+    Epoch 49, Update 300, Cost = 2,1311
+    Epoch 66, Update 400, Cost = 1,7531
+    Epoch 83, Update 500, Cost = 1,5208
+    Epoch 99, Update 600, Cost = 1,3256
+    Epoch 116, Update 700, Cost = 1,2773
+    Epoch 133, Update 800, Cost = 1,2153
+    Epoch 149, Update 900, Cost = 1,1429
+    Epoch 166, Update 1000, Cost = 1,1540
+    Epoch 183, Update 1100, Cost = 1,1309
+    Epoch 199, Update 1200, Cost = 1,0911
 
-Translations:
-<s> Che ore sono ? </s>
-<s> Questa è la mia casa </s>
-<s> Ti amo </s>
+    Translations:
+    <s> Che ore sono ? </s>
+    <s> Questa è </s>
+    <s> Lei </s>
              */
 
             /*
-             Epoch 16, Update 100, Cost = 0,3597
-Epoch 33, Update 200, Cost = 0,0520
-Epoch 49, Update 300, Cost = 0,0199
-Epoch 66, Update 400, Cost = 0,0100
-Epoch 83, Update 500, Cost = 0,0059
-Epoch 99, Update 600, Cost = 0,0032
-Epoch 116, Update 700, Cost = 0,0019
-Epoch 133, Update 800, Cost = 0,0012
-Epoch 149, Update 900, Cost = 0,0008
-Epoch 166, Update 1000, Cost = 0,3857
-Epoch 183, Update 1100, Cost = 0,1950
-Epoch 199, Update 1200, Cost = 0,0481
+             Epoch 16, Update 100, Cost = 5,8961
+Epoch 33, Update 200, Cost = 3,2281
+Epoch 49, Update 300, Cost = 2,2581
+Epoch 66, Update 400, Cost = 1,7894
+Epoch 83, Update 500, Cost = 1,6648
+Epoch 99, Update 600, Cost = 1,4011
+Epoch 116, Update 700, Cost = 1,3077
+Epoch 133, Update 800, Cost = 1,3604
+Epoch 149, Update 900, Cost = 1,2084
+Epoch 166, Update 1000, Cost = 1,1866
+Epoch 183, Update 1100, Cost = 1,2783
+Epoch 199, Update 1200, Cost = 1,1548
 
 Translations:
 <s> Che ore sono ? </s>
-<s> Questa è la mia casa </s>
-<s> Ti amo amo </s>
-
+<s> Questa è la </s>
+<s> Parlo è la </s>
              */
 
             /*
-             Epoch 16, Update 100, Cost = 0,4514
-Epoch 33, Update 200, Cost = 0,0498
-Epoch 49, Update 300, Cost = 0,0225
-Epoch 66, Update 400, Cost = 0,0103
-Epoch 83, Update 500, Cost = 0,0062
-Epoch 99, Update 600, Cost = 0,0036
-Epoch 116, Update 700, Cost = 0,0019
-Epoch 133, Update 800, Cost = 0,0013
-Epoch 149, Update 900, Cost = 0,0009
-Epoch 166, Update 1000, Cost = 1,1466
-Epoch 183, Update 1100, Cost = 0,6603
-Epoch 199, Update 1200, Cost = 0,1413
+             Epoch 16, Update 100, Cost = 5,5819
+Epoch 33, Update 200, Cost = 2,9613
+Epoch 49, Update 300, Cost = 1,9834
+Epoch 66, Update 400, Cost = 1,5219
+Epoch 83, Update 500, Cost = 1,3326
+Epoch 99, Update 600, Cost = 1,1761
+Epoch 116, Update 700, Cost = 1,0756
+Epoch 133, Update 800, Cost = 1,0546
+Epoch 149, Update 900, Cost = 1,0019
+Epoch 166, Update 1000, Cost = 0,9665
+Epoch 183, Update 1100, Cost = 0,9815
+Epoch 199, Update 1200, Cost = 0,9544
 
 Translations:
 <s> Che ore sono ? </s>
-<s> Questa è la mia casa </s>
+<s> Questa è la </s>
 <s> Ti è </s>
              */
 
